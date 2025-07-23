@@ -8,18 +8,22 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
 [![Node version](https://img.shields.io/node/v/kibela-api-client.svg)](https://nodejs.org)
 
-A modern TypeScript client for the Kibela API with CLI support.
+Kibela API用の非公式TypeScriptクライアントライブラリ（CLI対応）
 
-## Features
+**注意**: これはKibelaの非公式クライアントライブラリです。Kibela社による公式サポートはありません。
 
-- 🚀 **Type-safe**: Full TypeScript support with complete type definitions
-- 🔧 **CLI Tool**: Powerful command-line interface for common operations
-- 🔐 **Secure**: API key management with environment variable support
-- 📝 **Complete API Coverage**: Notes, users, groups, and more
-- ⚡ **Lightweight**: Minimal dependencies, optimized bundle size
-- 🌐 **GraphQL**: Direct GraphQL API integration
+[English Version](./README_EN.md)
 
-## Installation
+## 特徴
+
+- 🚀 **型安全**: 完全なTypeScriptサポートと型定義
+- 🔧 **CLIツール**: 一般的な操作のための強力なコマンドラインインターフェース
+- 🔐 **セキュア**: 環境変数対応のAPIキー管理
+- 📝 **完全なAPIカバレッジ**: ノート、ユーザー、グループなど
+- ⚡ **軽量**: 最小限の依存関係、最適化されたバンドルサイズ
+- 🌐 **GraphQL**: 直接的なGraphQL API統合
+
+## インストール
 
 ```bash
 # npm
@@ -31,142 +35,142 @@ yarn add kibela-api-client
 # pnpm
 pnpm add kibela-api-client
 
-# Global CLI installation
+# グローバルCLIインストール
 npm install -g kibela-api-client
 ```
 
-## Quick Start
+## クイックスタート
 
-### As a Library
+### ライブラリとして使用
 
 ```typescript
 import { createClient } from 'kibela-api-client';
 
-// Create client instance
+// クライアントインスタンスの作成
 const kibela = createClient({
   team: 'your-team-name',
   token: process.env.KIBELA_API_KEY
 });
 
-// Create a note
+// ノートの作成
 const note = await kibela.notes.create({
-  title: 'Meeting Notes',
-  content: '# Today\'s Topics\n\n- Project updates\n- Next steps',
+  title: 'ミーティングノート',
+  content: '# 今日のトピック\n\n- プロジェクトの更新\n- 次のステップ',
   coediting: true,
-  groupIds: ['group-id']
+  groupIds: ['<グループID>']
 });
 
-// Search notes
-const results = await kibela.notes.search('project update');
+// ノートの検索
+const results = await kibela.notes.search('プロジェクト更新');
 
-// Get current user
+// 現在のユーザー情報の取得
 const user = await kibela.users.getCurrentUser();
 ```
 
-### CLI Usage
+### CLI使用方法
 
-#### Configuration
+#### 設定
 
-The CLI supports multiple configuration methods with the following priority:
+CLIは以下の優先順位で複数の設定方法をサポートしています：
 
-1. Config file (`~/.kibela/config.json`)
-2. Environment variables
-3. `.env` file in current directory
+1. 設定ファイル（`~/.kibela/config.json`）
+2. 環境変数
+3. 現在のディレクトリの`.env`ファイル
 
 ```bash
-# Interactive setup
+# 対話的セットアップ
 kibela config
 
-# Set credentials directly
+# 認証情報を直接設定
 kibela config --team your-team --token your-api-token
 
-# Using environment variables
+# 環境変数を使用
 export KIBELA_TEAM=your-team
 export KIBELA_API_KEY=your-api-token
 
-# Or use .env file
+# または.envファイルを使用
 echo "KIBELA_TEAM=your-team" >> .env
 echo "KIBELA_API_KEY=your-api-token" >> .env
 ```
 
-#### Commands
+#### コマンド
 
-##### Notes Management
+##### ノート管理
 
 ```bash
-# List recent notes
+# 最近のノート一覧
 kibela notes list
 
-# List notes in a specific group
-kibela notes list --group GROUP_ID
+# 特定のグループのノート一覧
+kibela notes list --group <グループID>
 
-# List notes in a specific folder within a group
-kibela notes list --group GROUP_ID --folder "specs"
+# グループ内の特定のフォルダのノート一覧
+kibela notes list --group <グループID> --folder "<フォルダ名>"
 
-# Search notes
-kibela notes list --search "keyword" --limit 20
+# ノートの検索
+kibela notes list --search "キーワード" --limit 20
 
-# List all folders in a group
-kibela notes folders --group GROUP_ID
+# グループ内の全フォルダ一覧
+kibela notes folders --group <グループID>
 
-# Create a new note
-kibela notes create --title "Title" --content "Content" --groups GROUP_ID
+# 新規ノートの作成
+kibela notes create --title "タイトル" --content "内容" --groups <グループID>
 
-# Create a note from markdown file
-kibela notes create --markdown note.md --groups GROUP_ID
+# Markdownファイルからノートを作成
+kibela notes create --markdown note.md --groups <グループID>
 
-# Create a note in a specific folder
-kibela notes create --markdown note.md --groups GROUP_ID --folder "specs"
+# 特定のフォルダにノートを作成
+kibela notes create --markdown note.md --groups <グループID> --folder "<フォルダ名>"
 
-# Get a specific note
-kibela notes get <note-id>
+# 特定のノートを取得
+kibela notes get <ノートID>
 
-# Save note content to file
-kibela notes get <note-id> --output output.md
+# ノートの内容をファイルに保存
+kibela notes get <ノートID> --output output.md
 
-# Show HTML content instead of markdown
-kibela notes get <note-id> --html
+# Markdownの代わりにHTML内容を表示
+kibela notes get <ノートID> --html
 
-# Update a note
-kibela notes update <note-id> --title "New Title" --content "New Content"
+# ノートの更新
+kibela notes update <ノートID> --title "新しいタイトル" --content "新しい内容"
 
-# Update a note from markdown file
-kibela notes update <note-id> --markdown updated.md
+# Markdownファイルからノートを更新
+kibela notes update <ノートID> --markdown updated.md
 
-# Delete a note
-kibela notes delete <note-id>
+# ノートの削除
+kibela notes delete <ノートID>
 ```
 
-##### Workspace Information
+##### ワークスペース情報
 
 ```bash
-# List all groups
+# 全グループ一覧
 kibela groups
-kibela groups --all  # Show all groups without pagination
+kibela groups --all  # ページネーションなしで全グループを表示
 
-# List users
+# ユーザー一覧
 kibela users list
-kibela users list --all  # Show all users
+kibela users list --all  # 全ユーザーを表示
 
-# Get current user info
+# 現在のユーザー情報を取得
 kibela users me
 ```
 
-## API Reference
+## APIリファレンス
 
-### Client Creation
+### クライアント作成
 
 ```typescript
 const kibela = createClient({
-  team: string,    // Your Kibela team name
-  token: string    // Your API token
+  team: string,    // あなたのKibelaチーム名
+  token: string    // あなたのAPIトークン
 });
 ```
 
 ### Notes API
 
 ```typescript
-// Create a note
+// ノートの作成
 kibela.notes.create({
   title: string,
   content: string,
@@ -179,7 +183,7 @@ kibela.notes.create({
   }>
 })
 
-// Update a note
+// ノートの更新
 kibela.notes.update(id: string, {
   title?: string,
   content?: string,
@@ -188,13 +192,13 @@ kibela.notes.update(id: string, {
   draft?: boolean
 })
 
-// Delete a note
+// ノートの削除
 kibela.notes.delete(id: string)
 
-// Get a note by ID
+// IDでノートを取得
 kibela.notes.get(id: string)
 
-// List notes with pagination
+// ページネーション付きノート一覧
 kibela.notes.list({
   first?: number,
   after?: string,
@@ -204,7 +208,7 @@ kibela.notes.list({
   }
 })
 
-// Search notes
+// ノートの検索
 kibela.notes.search(query: string, {
   first?: number,
   after?: string
@@ -214,89 +218,89 @@ kibela.notes.search(query: string, {
 ### Groups API
 
 ```typescript
-// List groups
+// グループ一覧
 kibela.groups.list({
   first?: number,
   after?: string
 })
 
-// Get a group by ID
+// IDでグループを取得
 kibela.groups.get(id: string)
 
-// Get all groups (no pagination)
+// 全グループを取得（ページネーションなし）
 kibela.groups.getAll()
 ```
 
 ### Users API
 
 ```typescript
-// List users
+// ユーザー一覧
 kibela.users.list({
   first?: number,
   after?: string
 })
 
-// Get current user
+// 現在のユーザーを取得
 kibela.users.getCurrentUser()
 
-// Get all users (no pagination)
+// 全ユーザーを取得（ページネーションなし）
 kibela.users.getAll()
 ```
 
-## Environment Variables
+## 環境変数
 
-- `KIBELA_TEAM`: Your Kibela team name
-- `KIBELA_API_KEY` or `KIBELA_TOKEN`: Your API token
+- `KIBELA_TEAM`: あなたのKibelaチーム名
+- `KIBELA_API_KEY` または `KIBELA_TOKEN`: あなたのAPIトークン
 
-## Security
+## セキュリティ
 
-- API tokens are never logged or displayed in full
-- Tokens are masked in CLI output (shows only first 4 and last 4 characters)
-- Support for `.env` files for local development
-- Secure storage in user home directory for CLI configuration
+- APIトークンはログに記録されたり、完全に表示されることはありません
+- トークンはCLI出力でマスクされます（最初の4文字と最後の4文字のみ表示）
+- ローカル開発用の`.env`ファイルをサポート
+- CLI設定用にユーザーホームディレクトリに安全に保存
 
-## Error Handling
+## エラーハンドリング
 
-The library provides detailed error messages with specific error codes:
+ライブラリは特定のエラーコードと共に詳細なエラーメッセージを提供します：
 
 ```typescript
 try {
   await kibela.notes.create({ title: '', content: '' });
 } catch (error) {
   if (error.code === 'AUTH_ERROR') {
-    // Handle authentication error
+    // 認証エラーの処理
   } else if (error.code === 'VALIDATION_ERROR') {
-    // Handle validation error
+    // バリデーションエラーの処理
   }
 }
 ```
 
-## Development
+## 開発
 
 ```bash
-# Install dependencies
+# 依存関係のインストール
 npm install
 
-# Build the project
+# プロジェクトのビルド
 npm run build
 
-# Run CLI in development
+# 開発モードでCLIを実行
 npm run dev
 
-# Run tests
+# テストの実行
 npm test
 ```
 
-## Contributing
+## コントリビュート
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+コントリビューションを歓迎します！お気軽にプルリクエストを送信してください。
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+1. リポジトリをフォーク
+2. フィーチャーブランチを作成（`git checkout -b feature/amazing-feature`）
+3. 変更をコミット（`git commit -m 'Add some amazing feature'`）
+4. ブランチにプッシュ（`git push origin feature/amazing-feature`）
+5. プルリクエストを開く
 
-## License
+## ライセンス
 
-MIT
+MIT © [Se1ya0hara](https://github.com/Se1ya0hara)

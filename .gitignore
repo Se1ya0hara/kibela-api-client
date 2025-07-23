@@ -9,3 +9,5 @@ coverage/
 .vscode/
 .idea/
 .claude/
+description.md
+memo.md

@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.1.9] - 2025-07-23
+
+### Documentation
+- Added Japanese README with English version link
+- Replaced specific IDs and folder names with generic placeholders in examples
+- Added unofficial library disclaimer to clarify this is not officially supported by Kibela, Inc.
+- Updated license attribution to MIT © Se1ya0hara
+
+### Removed
+- Removed setup-github.md file
+- Added description.md and memo.md to .gitignore
+
 ## [0.1.8] - 2025-07-23
 
 ### Fixed
