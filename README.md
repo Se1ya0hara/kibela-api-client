@@ -3,14 +3,14 @@
 [![npm version](https://img.shields.io/npm/v/kibela-api-client.svg)](https://www.npmjs.com/package/kibela-api-client)
 [![npm downloads](https://img.shields.io/npm/dm/kibela-api-client.svg)](https://www.npmjs.com/package/kibela-api-client)
 [![npm downloads total](https://img.shields.io/npm/dt/kibela-api-client.svg)](https://www.npmjs.com/package/kibela-api-client)
-[![Bundle Size](https://img.shields.io/bundlephobia/minzip/kibela-api-client)](https://bundlephobia.com/package/kibela-api-client)
+[![Zero Dependencies](https://img.shields.io/badge/dependencies-0-brightgreen.svg)](https://www.npmjs.com/package/kibela-api-client?activeTab=dependencies)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
 [![Node version](https://img.shields.io/node/v/kibela-api-client.svg)](https://nodejs.org)
 
-Kibela API用の非公式TypeScriptクライアントライブラリ（CLI対応）
+Kibela API用の非公式TypeScriptクライアントライブラリ - ゼロ依存、フル機能CLI付き
 
-**注意**: これはKibelaの非公式クライアントライブラリです。Kibela社による公式サポートはありません。
+**注意**: これはKibelaの非公式クライアントライブラリです。Kibelaのサービス提供者による公式サポートはありません。
 
 [English Version](./README_EN.md)
 
@@ -20,23 +20,25 @@ Kibela API用の非公式TypeScriptクライアントライブラリ（CLI対応
 - 🔧 **CLIツール**: 一般的な操作のための強力なコマンドラインインターフェース
 - 🔐 **セキュア**: 環境変数対応のAPIキー管理
 - 📝 **完全なAPIカバレッジ**: ノート、ユーザー、グループなど
-- ⚡ **軽量**: 最小限の依存関係、最適化されたバンドルサイズ
+- ⚡ **外部依存ゼロ**: Node.js標準モジュールのみを使用
 - 🌐 **GraphQL**: 直接的なGraphQL API統合
+- 🔄 **ローカル管理**: ローカルファイルとKibelaの効率的な同期
+- 📄 **Frontmatter対応**: YAMLメタデータ付きMarkdownファイルの完全サポート
 
 ## インストール
 
 ```bash
 # npm
-npm install kibela-api-client
+npm install -g kibela-api-client
 
 # yarn
-yarn add kibela-api-client
+yarn global add kibela-api-client
 
 # pnpm
-pnpm add kibela-api-client
+pnpm add -g kibela-api-client
 
-# グローバルCLIインストール
-npm install -g kibela-api-client
+# ローカルプロジェクト
+npm install kibela-api-client
 ```
 
 ## クイックスタート
@@ -49,7 +51,7 @@ import { createClient } from 'kibela-api-client';
 // クライアントインスタンスの作成
 const kibela = createClient({
   team: 'your-team-name',
-  token: process.env.KIBELA_API_KEY
+  token: process.env.KIBELA_TOKEN
 });
 
 // ノートの作成
@@ -71,90 +73,46 @@ const user = await kibela.users.getCurrentUser();
 
 #### 設定
 
-CLIは以下の優先順位で複数の設定方法をサポートしています：
-
-1. 設定ファイル（`~/.kibela/config.json`）
-2. 環境変数
-3. 現在のディレクトリの`.env`ファイル
-
 ```bash
 # 対話的セットアップ
 kibela config
 
-# 認証情報を直接設定
+# 直接設定
 kibela config --team your-team --token your-api-token
 
-# 環境変数を使用
+# 環境変数で設定
 export KIBELA_TEAM=your-team
-export KIBELA_API_KEY=your-api-token
-
-# または.envファイルを使用
-echo "KIBELA_TEAM=your-team" >> .env
-echo "KIBELA_API_KEY=your-api-token" >> .env
+export KIBELA_TOKEN=your-api-token
 ```
 
-#### コマンド
-
-##### ノート管理
+#### 基本コマンド
 
 ```bash
-# 最近のノート一覧
-kibela notes list
+# 全ノートの取得
+kibela all                    # ローカルにダウンロード
+kibela all --list             # 一覧表示のみ
+kibela all -l 20              # 20件のみ
 
-# 特定のグループのノート一覧
-kibela notes list --group <グループID>
-
-# グループ内の特定のフォルダのノート一覧
-kibela notes list --group <グループID> --folder "<フォルダ名>"
-
-# ノートの検索
-kibela notes list --search "キーワード" --limit 20
-
-# グループ内の全フォルダ一覧
-kibela notes folders --group <グループID>
-
-# 新規ノートの作成
-kibela notes create --title "タイトル" --content "内容" --groups <グループID>
-
-# Markdownファイルからノートを作成
-kibela notes create --markdown note.md --groups <グループID>
-
-# 特定のフォルダにノートを作成
-kibela notes create --markdown note.md --groups <グループID> --folder "<フォルダ名>"
-
-# 特定のノートを取得
-kibela notes get <ノートID>
-
-# ノートの内容をファイルに保存
-kibela notes get <ノートID> --output output.md
-
-# Markdownの代わりにHTML内容を表示
-kibela notes get <ノートID> --html
+# 特定ノートの取得
+kibela get <ノートID>         # ID指定（タイトルがファイル名に）
+kibela get <ID> --frontmatter # フロントマター付きで保存
+kibela get --group <ID>       # グループ指定
 
 # ノートの更新
-kibela notes update <ノートID> --title "新しいタイトル" --content "新しい内容"
+kibela set notes/123.md       # ファイルから更新
+kibela set --id <ID> --title "新タイトル"
 
-# Markdownファイルからノートを更新
-kibela notes update <ノートID> --markdown updated.md
-
-# ノートの削除
-kibela notes delete <ノートID>
+# ノートの新規作成  
+kibela new                    # 対話的に作成
+kibela new --file note.md     # ファイルから作成
+kibela new --title "タイトル" --content "内容"
 ```
 
-##### ワークスペース情報
-
-```bash
-# 全グループ一覧
-kibela groups
-kibela groups --all  # ページネーションなしで全グループを表示
-
-# ユーザー一覧
-kibela users list
-kibela users list --all  # 全ユーザーを表示
-
-# 現在のユーザー情報を取得
-kibela users me
-```
+# シンプルなコマンド体系
+kibela all                    # 全ノートをローカルにダウンロード
+kibela get --search "検索"   # ノートを検索・取得
+kibela set notes/123.md       # 既存ノートを更新
+kibela new --file note.md     # 新規ノートを作成
 
 ## APIリファレンス
 
@@ -250,7 +208,7 @@ kibela.users.getAll()
 ## 環境変数
 
 - `KIBELA_TEAM`: あなたのKibelaチーム名
-- `KIBELA_API_KEY` または `KIBELA_TOKEN`: あなたのAPIトークン
+- `KIBELA_TOKEN`: あなたのAPIトークン
 
 ## セキュリティ
 
@@ -290,6 +248,36 @@ npm run dev
 # テストの実行
 npm test
 ```
+
+## 制限事項
+
+- **検索機能**: Kibela APIの制限により、検索機能（`--search`）は現在利用できません
+  - 代替方法: `kibela all --list | grep "検索語"` または グループ指定での取得
+
+## 外部依存ゼロの実装
+
+このライブラリは外部依存を一切使用せず、Node.js標準モジュールのみで実装されています：
+
+- HTTPクライアント: Node.js標準の`https`モジュール
+- CLIフレームワーク: 自前実装
+- ターミナル装飾: ANSIエスケープコード直接使用
+- バリデーション: 軽量な自前実装
+- 環境変数: `process.env`直接使用
+
+これにより、セキュリティリスクを最小化し、バンドルサイズを削減しています。
+
+## シンプルなコマンド体系
+
+直感的な4つのコマンドでKibelaを操作：
+
+- **all**: 全ノートの一括取得・ダウンロード
+- **get**: 特定ノートの取得・検索
+- **set**: 既存ノートの更新
+- **new**: 新規ノートの作成
+
+各コマンドは`--dir`オプションでローカルファイル管理もサポートします。
+
+詳細な使用方法は[USAGE.md](./USAGE.md)をご覧ください。
 
 ## コントリビュート
 

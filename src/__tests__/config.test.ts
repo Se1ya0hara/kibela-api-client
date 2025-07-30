@@ -17,7 +17,7 @@ describe('ConfigManager', () => {
   });
 
   it('should load config from environment variables', () => {
-    process.env.KIBELA_API_KEY = 'test-key';
+    process.env.KIBELA_TOKEN = 'test-key';
     process.env.KIBELA_TEAM = 'test-team';
 
     expect(ConfigManager.get('token')).toBe('test-key');
@@ -25,7 +25,7 @@ describe('ConfigManager', () => {
   });
 
   it('should prioritize config file over environment variables', () => {
-    process.env.KIBELA_API_KEY = 'env-key';
+    process.env.KIBELA_TOKEN = 'env-key';
     process.env.KIBELA_TEAM = 'env-team';
 
     ConfigManager.set('token', 'config-key');
@@ -35,17 +35,13 @@ describe('ConfigManager', () => {
     expect(ConfigManager.get('team')).toBe('config-team');
   });
 
-  it('should support both KIBELA_TOKEN and KIBELA_API_KEY', () => {
+  it('should support KIBELA_TOKEN', () => {
     process.env.KIBELA_TOKEN = 'token-value';
     expect(ConfigManager.get('token')).toBe('token-value');
-
-    delete process.env.KIBELA_TOKEN;
-    process.env.KIBELA_API_KEY = 'api-key-value';
-    expect(ConfigManager.get('token')).toBe('api-key-value');
   });
 
   it('should return undefined when config is not set', () => {
-    delete process.env.KIBELA_API_KEY;
+    delete process.env.KIBELA_TOKEN;
     delete process.env.KIBELA_TEAM;
     delete process.env.KIBELA_TOKEN;
 
@@ -75,7 +71,7 @@ describe('ConfigManager', () => {
 
   it('should get config source correctly', () => {
     // Test environment source
-    process.env.KIBELA_API_KEY = 'env-key';
+    process.env.KIBELA_TOKEN = 'env-key';
     process.env.KIBELA_TEAM = 'env-team';
     let source = ConfigManager.getConfigSource();
     expect(source.team).toBe('.env/environment');

@@ -47,5 +47,6 @@ coverage/
 .eslintrc*
 .prettierrc*
 .editorconfig
+IMPLEMENTATION_PLAN.md
 DESIGN.md
 EOF < /dev/null

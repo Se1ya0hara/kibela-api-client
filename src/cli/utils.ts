@@ -1,31 +1,28 @@
-import chalk from 'chalk';
-import ora from 'ora';
+import { colors } from '../core/terminal/colors';
+import { Spinner } from '../core/terminal/spinner';
 import { Kibela } from '../index';
 import { ConfigManager } from './config';
 import { validateConfig, sanitizeToken } from './_validators';
 import { KibelaError } from './_error-handler';
 
 export function success(message: string): void {
-  console.log(chalk.green('✔'), message);
+  console.log(colors.green('✔'), message);
 }
 
 export function error(message: string): void {
-  console.error(chalk.red('✖'), message);
+  console.error(colors.red('✖'), message);
 }
 
 export function info(message: string): void {
-  console.log(chalk.blue('ℹ'), message);
+  console.log(colors.blue('ℹ'), message);
 }
 
 export function warn(message: string): void {
-  console.log(chalk.yellow('⚠'), message);
+  console.log(colors.yellow('⚠'), message);
 }
 
 export function createSpinner(text: string) {
-  return ora({
-    text,
-    spinner: 'dots'
-  });
+  return new Spinner(text);
 }
 
 export function getClient(): Kibela {

@@ -197,18 +197,9 @@ export const SEARCH_NOTES = `
       edges {
         cursor
         node {
-          __typename
-          ... on Note {
-            id
-            title
-            contentUpdatedAt
-            url
-            author {
-              id
-              account
-              realName
-            }
-          }
+          id
+          title
+          url
         }
       }
       pageInfo {
@@ -306,3 +297,12 @@ export const LIST_GROUP_NOTES_LIGHT = `
     }
   }
 `;
+export const notesQueries = {
+  create: CREATE_NOTE,
+  update: UPDATE_NOTE,
+  delete: DELETE_NOTE,
+  get: GET_NOTE,
+  list: LIST_NOTES,
+  search: SEARCH_NOTES,
+  groupNotes: LIST_GROUP_NOTES,
+};

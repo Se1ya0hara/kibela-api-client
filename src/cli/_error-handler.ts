@@ -1,5 +1,14 @@
-import chalk from 'chalk';
-import { GraphQLError } from 'graphql-request/build/esm/types';
+import { colors } from '../core/terminal/colors';
+
+interface GraphQLError {
+  message: string;
+  extensions?: any;
+  locations?: Array<{
+    line: number;
+    column: number;
+  }>;
+  path?: Array<string | number>;
+}
 
 export class KibelaError extends Error {
   constructor(
@@ -69,17 +78,17 @@ export function handleGraphQLError(error: any): never {
 }
 
 export function displayError(error: Error | KibelaError): void {
-  console.error(chalk.red('✖'), chalk.bold('Error:'), error.message);
+  console.error(colors.red('✖'), colors.bold('Error:'), error.message);
   
   if (error instanceof KibelaError) {
     if (error.code === 'AUTH_ERROR') {
-      console.error(chalk.dim('\nPlease run "kibela config" to update your credentials.'));
+      console.error(colors.dim('\nPlease run "kibela config" to update your credentials.'));
     } else if (error.code === 'NETWORK_ERROR') {
-      console.error(chalk.dim('\nCheck your internet connection and team name.'));
+      console.error(colors.dim('\nCheck your internet connection and team name.'));
     }
     
     if (process.env.DEBUG && error.details) {
-      console.error(chalk.dim('\nDebug details:'));
+      console.error(colors.dim('\nDebug details:'));
       console.error(error.details);
     }
   }

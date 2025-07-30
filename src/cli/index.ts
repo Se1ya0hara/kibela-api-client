@@ -1,21 +1,44 @@
 #!/usr/bin/env node
 
-import { Command } from 'commander';
+import { CLI } from '../core/cli/command';
 import { configCommand } from './commands/config';
-import { notesCommand } from './commands/notes';
-import { groupsCommand } from './commands/groups';
+import { allCommand } from './commands/all';
+import { getCommand } from './commands/get';
+import { setCommand } from './commands/set';
+import { newCommand } from './commands/new';
+import { groupsCommand } from './commands/groups-simple';
 import { usersCommand } from './commands/users';
+import { EnvLoader } from '../core/env';
 
-const program = new Command();
+// Load environment variables
+EnvLoader.load();
 
-program
-  .name('kibela')
-  .description('Kibela API CLI')
-  .version('0.1.0');
+const cli = new CLI('kibela', 'Kibela API CLI - Zero Dependencies');
 
-program.addCommand(configCommand);
-program.addCommand(notesCommand);
-program.addCommand(groupsCommand);
-program.addCommand(usersCommand);
+cli.setVersion('0.2.0');
 
-program.parse(process.argv);
+// Configuration command
+const config = cli.command('config', 'Configure Kibela credentials');
+configCommand(config);
+
+// Main commands
+const all = cli.command('all', 'Get all notes from Kibela');
+allCommand(all);
+
+const get = cli.command('get', 'Get specific notes or directory');
+getCommand(get);
+
+const set = cli.command('set <file>', 'Update existing note');
+setCommand(set);
+
+const newCmd = cli.command('new', 'Create new note');
+newCommand(newCmd);
+
+// Utility commands
+const groups = cli.command('groups', 'List Kibela groups');
+groupsCommand(groups);
+
+const users = cli.command('users', 'List Kibela users');
+usersCommand(users);
+
+cli.parse();

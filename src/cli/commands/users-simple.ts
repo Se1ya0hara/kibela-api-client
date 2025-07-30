@@ -4,8 +4,8 @@ import { Spinner } from '../../core/terminal/spinner';
 import { colors } from '../../core/terminal/colors';
 
 export function usersCommand(program: Command): void {
-  // Default action - list users
-  program
+  const list = program.command('list', 'List all users');
+  list
     .option('--all', 'Show all users without pagination')
     .action(async ({ options }) => {
       const spinner = new Spinner('Fetching users...');
@@ -38,7 +38,6 @@ export function usersCommand(program: Command): void {
       }
     });
   
-  // Add 'me' subcommand
   const me = program.command('me', 'Show current user info');
   me.action(async () => {
     const spinner = new Spinner('Fetching user info...');

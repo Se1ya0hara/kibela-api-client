@@ -1,66 +1,174 @@
-import { z } from 'zod';
+import { Validator, Schema } from '../core/validation/validator';
 
 // Configuration validation
-export const ConfigSchema = z.object({
-  team: z.string().min(1, 'Team name is required'),
-  token: z.string().min(1, 'API token is required')
-});
+export const ConfigSchema: Schema = {
+  team: {
+    type: 'string',
+    required: true,
+    min: 1,
+    validate: (value) => value.trim() === '' ? 'Team name is required' : null,
+  },
+  token: {
+    type: 'string',
+    required: true,
+    min: 1,
+    validate: (value) => value.trim() === '' ? 'API token is required' : null,
+  },
+};
 
 // Note input validation
-export const CreateNoteInputSchema = z.object({
-  title: z.string().min(1, 'Title is required'),
-  content: z.string().min(1, 'Content is required'),
-  coediting: z.boolean().optional(),
-  groupIds: z.array(z.string()).optional(),
-  draft: z.boolean().optional()
-});
+export const CreateNoteInputSchema: Schema = {
+  title: {
+    type: 'string',
+    required: true,
+    min: 1,
+    validate: (value) => value.trim() === '' ? 'Title is required' : null,
+  },
+  content: {
+    type: 'string',
+    required: true,
+    min: 1,
+    validate: (value) => value.trim() === '' ? 'Content is required' : null,
+  },
+  coediting: {
+    type: 'boolean',
+    required: false,
+  },
+  groupIds: {
+    type: 'array',
+    required: false,
+    items: { type: 'string' },
+  },
+  draft: {
+    type: 'boolean',
+    required: false,
+  },
+};
 
-export const UpdateNoteInputSchema = z.object({
-  title: z.string().min(1).optional(),
-  content: z.string().min(1).optional(),
-  coediting: z.boolean().optional(),
-  groupIds: z.array(z.string()).optional(),
-  draft: z.boolean().optional()
-}).refine(data => data.title || data.content, {
-  message: 'At least one field (title or content) must be provided'
-});
+export const UpdateNoteInputSchema: Schema = {
+  title: {
+    type: 'string',
+    required: false,
+    min: 1,
+  },
+  content: {
+    type: 'string',
+    required: false,
+    min: 1,
+  },
+  coediting: {
+    type: 'boolean',
+    required: false,
+  },
+  groupIds: {
+    type: 'array',
+    required: false,
+    items: { type: 'string' },
+  },
+  draft: {
+    type: 'boolean',
+    required: false,
+  },
+};
 
 // Environment variable validation
-export const EnvSchema = z.object({
-  KIBELA_TEAM: z.string().optional(),
-  KIBELA_TOKEN: z.string().optional(),
-  KIBELA_API_KEY: z.string().optional()
-}).refine(data => !data.KIBELA_TOKEN || !data.KIBELA_API_KEY || data.KIBELA_TOKEN === data.KIBELA_API_KEY, {
-  message: 'Both KIBELA_TOKEN and KIBELA_API_KEY are set with different values. Please use only one.'
-});
+export const EnvSchema: Schema = {
+  KIBELA_TEAM: {
+    type: 'string',
+    required: false,
+  },
+  KIBELA_TOKEN: {
+    type: 'string',
+    required: false,
+  },
+};
 
 // API response validation
-export const NoteResponseSchema = z.object({
-  id: z.string(),
-  title: z.string(),
-  content: z.string(),
-  url: z.string()
-});
+export const NoteResponseSchema: Schema = {
+  id: {
+    type: 'string',
+    required: true,
+  },
+  title: {
+    type: 'string',
+    required: true,
+  },
+  content: {
+    type: 'string',
+    required: true,
+  },
+  url: {
+    type: 'string',
+    required: true,
+  },
+};
 
-export const ErrorResponseSchema = z.object({
-  errors: z.array(z.object({
-    message: z.string(),
-    extensions: z.object({
-      code: z.string().optional()
-    }).optional()
-  }))
-});
+export const ErrorResponseSchema: Schema = {
+  errors: {
+    type: 'array',
+    required: true,
+    items: {
+      type: 'object',
+      properties: {
+        message: {
+          type: 'string',
+          required: true,
+        },
+        extensions: {
+          type: 'object',
+          required: false,
+          properties: {
+            code: {
+              type: 'string',
+              required: false,
+            },
+          },
+        },
+      },
+    },
+  },
+};
 
 // Validation helpers
 export function validateConfig(team?: string, token?: string): { isValid: boolean; error?: string } {
-  const result = ConfigSchema.safeParse({ 
-    team: team || '', 
-    token: token || '' 
-  });
+  const errors = Validator.validate(
+    { team: team || '', token: token || '' },
+    ConfigSchema
+  );
   
-  if (!result.success) {
-    const errors = result.error.issues.map((issue) => issue.message).join(', ');
-    return { isValid: false, error: errors };
+  if (errors.length > 0) {
+    const errorMessages = errors.map(e => e.message).join(', ');
+    return { isValid: false, error: errorMessages };
+  }
+  
+  return { isValid: true };
+}
+
+export function validateUpdateNoteInput(data: any): { isValid: boolean; error?: string } {
+  const errors = Validator.validate(data, UpdateNoteInputSchema);
+  
+  // Additional validation: at least one field must be provided
+  if (!data.title && !data.content && data.coediting === undefined && 
+      !data.groupIds && data.draft === undefined) {
+    return { isValid: false, error: 'At least one field must be provided' };
+  }
+  
+  if (errors.length > 0) {
+    const errorMessages = errors.map(e => e.message).join(', ');
+    return { isValid: false, error: errorMessages };
+  }
+  
+  return { isValid: true };
+}
+
+export function validateEnv(env: any): { isValid: boolean; error?: string } {
+  const errors = Validator.validate(env, EnvSchema);
+  
+  // No additional validation needed for single token
+  
+  if (errors.length > 0) {
+    const errorMessages = errors.map(e => e.message).join(', ');
+    return { isValid: false, error: errorMessages };
   }
   
   return { isValid: true };

@@ -11,3 +11,14 @@ coverage/
 .claude/
 description.md
 memo.md
+
+# Temporary and old files
+*-old.*
+*-temp.*
+*.old
+*.temp
+*_old.*
+*_temp.*
+
+IMPLEMENT.md
+IMPLEMENTATION_PLAN.md

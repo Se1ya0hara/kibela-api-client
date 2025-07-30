@@ -1,10 +1,10 @@
 import fs from 'fs';
 import path from 'path';
 import os from 'os';
-import dotenv from 'dotenv';
+import { EnvLoader } from '../core/env';
 
 // Load .env file from current directory
-dotenv.config();
+EnvLoader.load();
 
 const CONFIG_DIR = path.join(os.homedir(), '.kibela');
 const CONFIG_FILE = path.join(CONFIG_DIR, 'config.json');
@@ -45,17 +45,17 @@ export class ConfigManager {
   static get(key: keyof CliConfig): string | undefined {
     // Priority order:
     // 1. Config file (~/.kibela/config.json)
-    // 2. Environment variables (KIBELA_TEAM, KIBELA_API_KEY)
-    // 3. .env file (KIBELA_TEAM, KIBELA_API_KEY)
+    // 2. Environment variables (KIBELA_TEAM, KIBELA_TOKEN)
+    // 3. .env file (KIBELA_TEAM, KIBELA_TOKEN)
     
     const config = this.load();
     if (config[key]) {
       return config[key];
     }
 
-    // Special handling for 'token' to support both KIBELA_TOKEN and KIBELA_API_KEY
+    // Get token from environment
     if (key === 'token') {
-      return process.env.KIBELA_TOKEN || process.env.KIBELA_API_KEY;
+      return process.env.KIBELA_TOKEN;
     }
     
     return process.env[`KIBELA_${key.toUpperCase()}`];
@@ -93,7 +93,7 @@ export class ConfigManager {
     // Check for token
     if (config.token) {
       result.token = 'config file';
-    } else if (process.env.KIBELA_TOKEN || process.env.KIBELA_API_KEY) {
+    } else if (process.env.KIBELA_TOKEN) {
       result.token = '.env/environment';
     }
 

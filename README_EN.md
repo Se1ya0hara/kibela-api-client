@@ -10,7 +10,7 @@
 
 An unofficial modern TypeScript client for the Kibela API with CLI support.
 
-**Note**: This is an unofficial client library for Kibela. It is not officially supported by Kibela, Inc.
+**Note**: This is an unofficial client library for Kibela. It is not officially supported by Kibela.
 
 ## Features
 
@@ -47,7 +47,7 @@ import { createClient } from 'kibela-api-client';
 // Create client instance
 const kibela = createClient({
   team: 'your-team-name',
-  token: process.env.KIBELA_API_KEY
+  token: process.env.KIBELA_TOKEN
 });
 
 // Create a note
@@ -84,11 +84,11 @@ kibela config --team your-team --token your-api-token
 
 # Using environment variables
 export KIBELA_TEAM=your-team
-export KIBELA_API_KEY=your-api-token
+export KIBELA_TOKEN=your-api-token
 
 # Or use .env file
 echo "KIBELA_TEAM=your-team" >> .env
-echo "KIBELA_API_KEY=your-api-token" >> .env
+echo "KIBELA_TOKEN=your-api-token" >> .env
 ```
 
 #### Commands
@@ -96,47 +96,24 @@ echo "KIBELA_API_KEY=your-api-token" >> .env
 ##### Notes Management
 
 ```bash
-# List recent notes
-kibela notes list
+# List all notes
+kibela all                    # Download to local
+kibela all --list             # List only
+kibela all -l 20              # Limit to 20 items
 
-# List notes in a specific group
-kibela notes list --group GROUP_ID
+# Get specific notes
+kibela get <note-id>          # By ID (title becomes filename)
+kibela get <id> --frontmatter # Save with frontmatter
+kibela get --group <GROUP_ID> # By group
 
-# List notes in a specific folder within a group
-kibela notes list --group GROUP_ID --folder "specs"
+# Update existing note
+kibela set notes/123.md       # From file
+kibela set --id <note-id> --title "New Title"
 
-# Search notes
-kibela notes list --search "keyword" --limit 20
-
-# List all folders in a group
-kibela notes folders --group GROUP_ID
-
-# Create a new note
-kibela notes create --title "Title" --content "Content" --groups GROUP_ID
-
-# Create a note from markdown file
-kibela notes create --markdown note.md --groups GROUP_ID
-
-# Create a note in a specific folder
-kibela notes create --markdown note.md --groups GROUP_ID --folder "specs"
-
-# Get a specific note
-kibela notes get <note-id>
-
-# Save note content to file
-kibela notes get <note-id> --output output.md
-
-# Show HTML content instead of markdown
-kibela notes get <note-id> --html
-
-# Update a note
-kibela notes update <note-id> --title "New Title" --content "New Content"
-
-# Update a note from markdown file
-kibela notes update <note-id> --markdown updated.md
-
-# Delete a note
-kibela notes delete <note-id>
+# Create new note
+kibela new                    # Interactive
+kibela new --file note.md     # From file
+kibela new --title "Title" --content "Content"
 ```
 
 ##### Workspace Information
@@ -147,8 +124,8 @@ kibela groups
 kibela groups --all  # Show all groups without pagination
 
 # List users
-kibela users list
-kibela users list --all  # Show all users
+kibela users
+kibela users --all  # Show all users
 
 # Get current user info
 kibela users me
@@ -248,7 +225,7 @@ kibela.users.getAll()
 ## Environment Variables
 
 - `KIBELA_TEAM`: Your Kibela team name
-- `KIBELA_API_KEY` or `KIBELA_TOKEN`: Your API token
+- `KIBELA_TOKEN`: Your API token
 
 ## Security
 
@@ -288,6 +265,11 @@ npm run dev
 # Run tests
 npm test
 ```
+
+## Limitations
+
+- **Search function**: Due to Kibela API limitations, the search function (`--search`) is currently unavailable
+  - Alternative: Use `kibela all --list | grep "keyword"` or filter by group
 
 ## Contributing
 

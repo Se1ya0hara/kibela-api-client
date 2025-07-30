@@ -1,5 +1,38 @@
 # Changelog
 
+## [0.2.0] - 2025-07-30
+
+### Breaking Changes
+- Removed external dependencies - now zero dependencies
+- Changed environment variable from `KIBELA_API_KEY` to `KIBELA_TOKEN`
+- Search functionality temporarily disabled due to Kibela API limitations
+- Simplified CLI commands:
+  - `kibela notes list` → `kibela all`
+  - `kibela users list` → `kibela users`
+
+### Added
+- `--frontmatter` option for `get` command to include YAML metadata
+- Automatic filename generation from note titles
+- Complete internal implementations replacing all external packages:
+  - Custom HTTP client (replacing graphql-request)
+  - Custom CLI framework (replacing commander)
+  - Custom terminal colors (replacing chalk)
+  - Custom spinner (replacing ora)
+  - Custom prompt system (replacing prompts)
+  - Custom env loader (replacing dotenv)
+  - Custom validator (replacing zod)
+
+### Changed
+- All file operations now use note titles as filenames (with sanitization)
+- Simplified command structure to 4 main commands: `all`, `get`, `set`, `new`
+- `--no-download` changed to `--list` for the `all` command
+
+### Fixed
+- TypeScript type errors
+- CLI option parsing for long-form options after arguments
+- Null check errors in note retrieval
+- Duplicate KIBELA_TOKEN entries in validators
+
 ## [0.1.9] - 2025-07-23
 
 ### Documentation

@@ -1,4 +1,4 @@
-import { GraphQLClient } from 'graphql-request';
+import { GraphQLClient } from '../core/graphql/client';
 import { KibelaConfig } from '../types';
 
 export class KibelaClient {
