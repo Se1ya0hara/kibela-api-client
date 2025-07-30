@@ -1,4 +1,5 @@
-import { ConfigSchema } from '../cli/_validators';
+import { ConfigSchema, validateConfig } from '../cli/_validators';
+import { Validator } from '../core/validation/validator';
 
 describe('ConfigSchema', () => {
   it('should validate correct config', () => {
@@ -7,8 +8,8 @@ describe('ConfigSchema', () => {
       team: 'test-team'
     };
 
-    const result = ConfigSchema.safeParse(config);
-    expect(result.success).toBe(true);
+    const errors = Validator.validate(config, ConfigSchema);
+    expect(errors.length).toBe(0);
   });
 
   it('should fail with empty token', () => {
@@ -17,8 +18,9 @@ describe('ConfigSchema', () => {
       team: 'test-team'
     };
 
-    const result = ConfigSchema.safeParse(config);
-    expect(result.success).toBe(false);
+    const errors = Validator.validate(config, ConfigSchema);
+    expect(errors.length).toBeGreaterThan(0);
+    expect(errors[0].message).toContain('required');
   });
 
   it('should fail with empty team', () => {
@@ -27,8 +29,9 @@ describe('ConfigSchema', () => {
       team: ''
     };
 
-    const result = ConfigSchema.safeParse(config);
-    expect(result.success).toBe(false);
+    const errors = Validator.validate(config, ConfigSchema);
+    expect(errors.length).toBeGreaterThan(0);
+    expect(errors[0].message).toContain('required');
   });
 
   it('should fail with missing fields', () => {
@@ -36,7 +39,21 @@ describe('ConfigSchema', () => {
       token: 'test-token'
     };
 
-    const result = ConfigSchema.safeParse(config);
-    expect(result.success).toBe(false);
+    const errors = Validator.validate(config, ConfigSchema);
+    expect(errors.length).toBeGreaterThan(0);
+  });
+});
+
+describe('validateConfig', () => {
+  it('should return isValid true for valid config', () => {
+    const result = validateConfig('test-team', 'test-token');
+    expect(result.isValid).toBe(true);
+    expect(result.error).toBeUndefined();
+  });
+
+  it('should return isValid false for invalid config', () => {
+    const result = validateConfig('', 'test-token');
+    expect(result.isValid).toBe(false);
+    expect(result.error).toBeDefined();
   });
 });
