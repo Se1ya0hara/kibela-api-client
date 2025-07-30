@@ -1,6 +1,6 @@
 {
   "name": "kibela-api-client",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Kibela API client for Node.js with CLI",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

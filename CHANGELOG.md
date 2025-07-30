@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1] - 2025-07-30
+
+### Fixed
+- Removed old commander-based files that were causing CI errors
+- Cleaned up unused files (sync.ts, users-simple.ts)
+- Fixed GitHub Actions build failures
+
 ## [0.2.0] - 2025-07-30
 
 ### Breaking Changes

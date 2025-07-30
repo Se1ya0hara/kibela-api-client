@@ -15,7 +15,7 @@ EnvLoader.load();
 
 const cli = new CLI('kibela', 'Kibela API CLI - Zero Dependencies');
 
-cli.setVersion('0.2.0');
+cli.setVersion('0.2.1');
 
 // Configuration command
 const config = cli.command('config', 'Configure Kibela credentials');
