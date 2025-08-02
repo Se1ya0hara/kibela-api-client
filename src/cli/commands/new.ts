@@ -1,6 +1,6 @@
-import { Command } from '../../core/cli/command';
+import { Command } from '../core/command';
 import { getConfig } from './config';
-import { SyncClient } from '../../sync/sync-client';
+import { SyncClient } from '../sync/sync-client';
 import { Spinner } from '../../core/terminal/spinner';
 import { colors } from '../../core/terminal/colors';
 import { getClient } from '../utils';

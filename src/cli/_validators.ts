@@ -130,48 +130,35 @@ export const ErrorResponseSchema: Schema = {
 };
 
 // Validation helpers
+function createValidationHelper<T extends Schema>(schema: T) {
+  return (data: any): { isValid: boolean; error?: string } => {
+    const errors = Validator.validate(data, schema);
+    
+    if (errors.length > 0) {
+      const errorMessages = errors.map(e => e.message).join(', ');
+      return { isValid: false, error: errorMessages };
+    }
+    
+    return { isValid: true };
+  };
+}
+
 export function validateConfig(team?: string, token?: string): { isValid: boolean; error?: string } {
-  const errors = Validator.validate(
-    { team: team || '', token: token || '' },
-    ConfigSchema
-  );
-  
-  if (errors.length > 0) {
-    const errorMessages = errors.map(e => e.message).join(', ');
-    return { isValid: false, error: errorMessages };
-  }
-  
-  return { isValid: true };
+  return createValidationHelper(ConfigSchema)({ team: team || '', token: token || '' });
 }
 
 export function validateUpdateNoteInput(data: any): { isValid: boolean; error?: string } {
-  const errors = Validator.validate(data, UpdateNoteInputSchema);
-  
   // Additional validation: at least one field must be provided
   if (!data.title && !data.content && data.coediting === undefined && 
       !data.groupIds && data.draft === undefined) {
     return { isValid: false, error: 'At least one field must be provided' };
   }
   
-  if (errors.length > 0) {
-    const errorMessages = errors.map(e => e.message).join(', ');
-    return { isValid: false, error: errorMessages };
-  }
-  
-  return { isValid: true };
+  return createValidationHelper(UpdateNoteInputSchema)(data);
 }
 
 export function validateEnv(env: any): { isValid: boolean; error?: string } {
-  const errors = Validator.validate(env, EnvSchema);
-  
-  // No additional validation needed for single token
-  
-  if (errors.length > 0) {
-    const errorMessages = errors.map(e => e.message).join(', ');
-    return { isValid: false, error: errorMessages };
-  }
-  
-  return { isValid: true };
+  return createValidationHelper(EnvSchema)(env);
 }
 
 export function sanitizeToken(token: string): string {

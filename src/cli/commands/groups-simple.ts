@@ -1,4 +1,4 @@
-import { Command } from '../../core/cli/command';
+import { Command } from '../core/command';
 import { getClient } from '../utils';
 import { Spinner } from '../../core/terminal/spinner';
 import { colors } from '../../core/terminal/colors';

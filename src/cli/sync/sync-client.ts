@@ -1,9 +1,9 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { GraphQLClient } from '../core/graphql/client';
+import { GraphQLClient } from '../../core/graphql/client';
 import { FrontMatterParser, ParsedDocument } from './frontmatter';
-import { notesQueries } from '../queries/notes';
-import { Note } from '../types';
+import { notesQueries } from '../../queries/notes';
+import { Note } from '../../types';
 
 export interface SyncOptions {
   team: string;

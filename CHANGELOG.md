@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.2] - 2025-07-30
+
+### Changed
+- Refactored validation code to reduce duplication
+
 ## [0.2.1] - 2025-07-30
 
 ### Fixed

@@ -1,4 +1,4 @@
-import { Command } from '../../core/cli/command';
+import { Command } from '../core/command';
 import { prompt } from '../../core/terminal/prompt';
 import { ConfigManager } from '../config';
 import { success, info, error, displayToken } from '../utils';

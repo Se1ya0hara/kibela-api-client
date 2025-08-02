@@ -47,6 +47,8 @@ coverage/
 .eslintrc*
 .prettierrc*
 .editorconfig
+.claude
 IMPLEMENTATION_PLAN.md
 DESIGN.md
+CLAUDE.md
 EOF < /dev/null

@@ -1,9 +1,9 @@
-import { colors } from '../core/terminal/colors';
-import { Spinner } from '../core/terminal/spinner';
-import { Kibela } from '../index';
-import { ConfigManager } from './config';
-import { validateConfig, sanitizeToken } from './_validators';
-import { KibelaError } from './_error-handler';
+import { colors } from '../../core/terminal/colors';
+import { Spinner } from '../../core/terminal/spinner';
+import { Kibela } from '../../index';
+import { ConfigManager } from '../config';
+import { validateConfig, sanitizeToken } from '../_validators';
+import { KibelaError } from '../_error-handler';
 
 export function success(message: string): void {
   console.log(colors.green('✔'), message);
@@ -55,3 +55,6 @@ export function formatDate(dateString: string): string {
 export function displayToken(token: string): string {
   return sanitizeToken(token);
 }
+
+// Re-export frontmatter utilities
+export { generateFrontmatter, sanitizeFileName } from './frontmatter';

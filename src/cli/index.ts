@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { CLI } from '../core/cli/command';
+import { CLI } from './core/command';
 import { configCommand } from './commands/config';
 import { allCommand } from './commands/all';
 import { getCommand } from './commands/get';
